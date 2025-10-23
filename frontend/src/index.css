@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-mono bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .terminal-border {
+    @apply border border-gray-300 dark:border-gray-700 rounded-lg;
+  }
+
+  .terminal-shadow {
+    @apply shadow-lg shadow-gray-200 dark:shadow-gray-900/50;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-postgres-blue hover:bg-postgres-darkblue text-white rounded transition-colors duration-200 font-medium;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 rounded transition-colors duration-200 font-medium;
+  }
+}
+
+/* Print Styles */
+@media print {
+  /* Hide UI elements that shouldn't be printed */
+  header,
+  footer,
+  .print-button,
+  .copy-link-button {
+    display: none !important;
+  }
+
+  /* Force white background and black text */
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove shadows and optimize borders */
+  .terminal-border {
+    border: 1px solid #e5e7eb !important;
+  }
+
+  .terminal-shadow {
+    box-shadow: none !important;
+  }
+
+  /* Optimize for page breaks */
+  .feature-card {
+    page-break-inside: avoid;
+    border: 1px solid #e5e7eb !important;
+    background: white !important;
+  }
+
+  /* Remove dark mode styles */
+  * {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* Keep badges visible with borders */
+  .badge,
+  [class*="badge"] {
+    border: 1px solid currentColor !important;
+  }
+
+  /* Set page margins */
+  @page {
+    margin: 1cm;
+  }
+
+  /* Add comparison info at top */
+  .comparison-header::before {
+    content: "PostgreSQL Feature Comparison";
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
+
+  /* Ensure proper spacing */
+  .version-selector-section,
+  .search-filters-section {
+    display: none !important;
+  }
+}
