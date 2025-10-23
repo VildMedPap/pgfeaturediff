@@ -1,0 +1,58 @@
+name: Update Feature Matrix
+
+on:
+  # Weekly schedule disabled for initial testing
+  # schedule:
+  #   - cron: "0 6 * * 1"
+  # Allow manual triggering
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Run scraper
+        env:
+          OUTPUT_PATH: frontend/public/feature_matrix.json
+        run: |
+          uv run scraper/scraper.py
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --exit-code frontend/public/feature_matrix.json || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add frontend/public/feature_matrix.json
+          git commit -m "chore: update feature matrix data [skip ci]"
+          git push
+
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Feature Matrix Scraper Failed',
+              body: 'The weekly feature matrix scraper failed. Please check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.',
+              labels: ['automated', 'scraper']
+            })
