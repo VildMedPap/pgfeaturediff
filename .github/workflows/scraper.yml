@@ -1,9 +1,9 @@
 name: Update Feature Matrix
 
 on:
-  # Weekly schedule disabled for initial testing
-  # schedule:
-  #   - cron: "0 6 * * 1"
+  # Run every Monday at 6am UTC
+  schedule:
+    - cron: "0 6 * * 1"
   # Allow manual triggering
   workflow_dispatch:
 
